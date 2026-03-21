@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学生美术作品 × AI刺绣艺术展</title>
+<style>
+  /* ========= 全局变量与基础 ========= */
+  :root {
+    --gold: #c9a063;
+    --deep-red: #8b2e2e;
+    --ivory: #f8f4ec;
+    --emerald: #3a7d54;
+    --royal-blue: #27496d;
+    --shadow: rgba(75, 45, 30, 0.15);
+    --rich-pink: #c94f7c;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background-color: var(--ivory);
+    color: #333;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 广绣底纹 + 花纹叠加 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: 
+      /* 基础丝绒纹理 */
+      radial-gradient(circle at 20% 20%, var(--gold) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, var(--deep-red) 1px, transparent 1px),
+      /* 云纹样式 - 用径向渐变模拟 */
+      radial-gradient(circle at 30% 70%, var(--emerald) 20%, transparent 21%),
+      radial-gradient(circle at 70% 30%, var(--royal-blue) 15%, transparent 16%);
+    background-size: 40px 40px, 50px 50px, 300px 300px, 350px 350px;
+    background-repeat: repeat;
+    opacity: 0.12;
+    z-index: -2;
+  }
+  /* 缠枝莲纹样装饰层（用线性渐变做枝叶感觉） */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent, transparent 19px, var(--rich-pink) 20px, var(--rich-pink) 21px),
+      repeating-linear-gradient(-45deg, transparent, transparent 19px, var(--gold) 20px, var(--gold) 21px);
+    background-size: 60px 60px;
+    mix-blend-mode: multiply;
+    opacity: 0.06;
+    z-index: -1;
+  }
+
+  /* ========= 头部 ========= */
+  header {
+    text-align: center;
+    padding: 50px 20px 30px;
+    background: linear-gradient(45deg, var(--deep-red), var(--royal-blue), var(--gold));
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow);
+  }
+  /* 顶部花纹角标 */
+  header::before,
+  header::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at center, var(--gold) 30%, transparent 31%);
+    opacity: 0.25;
+  }
+  header::before {
+    top: -40px;
+    left: -40px;
+    transform: rotate(30deg);
+  }
+  header::after {
+    bottom: -40px;
+    right: -40px;
+    transform: rotate(-20deg);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 2.6rem;
+    letter-spacing: 6px;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  }
+  header p {
+    margin-top: 10px;
+    font-size: 1.15rem;
+    opacity: 0.92;
+  }
+
+  .intro {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+    line-height: 1.8;
+    font-size: 1.08rem;
+    color: var(--royal-blue);
+    position: relative;
+  }
+  /* 引言区花纹左/右装饰 */
+  .intro::before,
+  .intro::after {
+    content: "❀";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: var(--rich-pink);
+    opacity: 0.5;
+  }
+  .intro::before {
+    left: 0;
+  }
+  .intro::after {
+    right: 0;
+  }
+
+  /* ========= 作品展示区 ========= */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 36px;
+    padding: 30px 5%;
+    max-width: 1400px;
+    margin: 0 auto 80px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px var(--shadow);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+  /* 卡片四角花纹 */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+  .card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 16px 32px rgba(139, 46, 46, 0.3);
+    border-color: var(--rich-pink);
+  }
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.3s;
+  }
+  .card:hover img {
+    filter: brightness(1.08) saturate(1.15);
+  }
+  .caption {
+    padding: 14px 16px;
+    background: linear-gradient(to right, var(--ivory), #fdfaf3);
+    font-size: 1rem;
+    color: var(--deep-red);
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* ========= 全屏弹窗 ========= */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #overlay.active {
+    display: flex;
+  }
+  #overlay img {
+    max-width: 92%;
+    max-height: 92%;
+    border: 5px solid var(--gold);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(201,160,99,0.7);
+  }
+  #overlay.close {
+    cursor: pointer;
+  }
+
+  /* ========= 响应式 ========= */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 2rem;
+      letter-spacing: 3px;
+    }
+    .gallery {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 20px;
+    }
+    .intro::before,
+    .intro::after {
+      display: none;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>学生美术作品 × AI刺绣艺术展</h1>
+  <p>从画笔到针线 —— 创意的跨媒介旅程</p>
+</header>
+
+<section class="intro">
+  <p>本展览汇聚同学们的奇思妙想与人工智能的巧手演绎，将一幅幅手绘作品转化为灵动的广绣风格刺绣图案，让传统工艺在数字时代焕发新生。</p>
+</section>
+
+<main class="gallery">
+  <!-- 示例卡片：学生画 + AI刺绣 -->
+  <div class="card" onclick="openFullscreen('img1')">
+    <img id="img1" src=戴嘉妍.jpg>学生画《荔枝》 | AI刺绣版</div>
+  </div>
+
+  <div class="card" onclick="openFullscreen('img2')">
+    <img id="img2" src=李沁霏.jpg>学生画《荷塘》 | AI刺绣版</div>
+  </div>
+
+  <div class="card" onclick="openFullscreen('img3')">
+    <img id="img3" src=吴兆信.jpg>学生画《山居》 | AI刺绣版</div>
+  </div>
+
+  <!-- 可继续添加更多卡片 -->
+</main>
+
+<!-- 全屏显示层 -->
+<div id="overlay" onclick="closeFullscreen()">
+  <img src="" alt="全屏作品">
+</div>
+
+<script>
+function openFullscreen(imgId) {
+  const overlay = document.getElementById('overlay');
+  const fullImg = overlay.querySelector('img');
+  const thumb = document.getElementById(imgId);
+  fullImg.src = thumb.src;
+  overlay.classList.add('active');
+}
+function closeFullscreen() {
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('active');
+}
+</script>
+
+</body>
+</html>
