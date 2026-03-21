@@ -1,0 +1,525 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>锦绣天成 - 学生美术与AI刺绣作品展</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #c3272b; /* 朱砂红 */
+            --secondary-color: #d4af37; /* 金色 */
+            --accent-color: #1a1a1a; /* 墨黑 */
+            --light-color: #f8f0e3; /* 丝绸米白 */
+        }
+        
+        body {
+            font-family: "SimSun", "宋体", serif;
+            background: linear-gradient(135deg, #f8f0e3 0%, #f0e6d2 100%);
+            color: var(--accent-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 丝绸背景纹理 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(195, 39, 43, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(195, 39, 43, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* 传统边框装饰 */
+        .border-decoration {
+            position: fixed;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .border-top {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+        
+        .border-bottom {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+        
+        .border-left {
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+        
+        .border-right {
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+        
+        .corner-decoration {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            z-index: 6;
+            background-size: contain;
+            background-repeat: no-repeat;
+            pointer-events: none;
+        }
+        
+        .top-left {
+            top: 20px;
+            left: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 C60,20 40,40 20,100 L0,100 Z" fill="%23c3272b"/></svg>');
+        }
+        
+        .top-right {
+            top: 20px;
+            right: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M100,0 L0,0 L0,20 C40,20 60,40 80,100 L100,100 Z" fill="%23c3272b"/></svg>');
+        }
+        
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0,100 L100,100 L100,80 C60,80 40,60 20,0 L0,0 Z" fill="%23c3272b"/></svg>');
+        }
+        
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M100,100 L0,100 L0,80 C40,80 60,60 80,0 L100,0 Z" fill="%23c3272b"/></svg>');
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .intro {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 30px;
+            border-radius: 5px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(195, 39, 43, 0.2);
+            position: relative;
+        }
+        
+        .intro::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(195, 39, 43, 0.1);
+            pointer-events: none;
+        }
+        
+        .intro h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: normal;
+        }
+        
+        .intro p {
+            margin-bottom: 15px;
+            text-indent: 2em;
+        }
+        
+        .gallery-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 50px 0;
+        }
+        
+        .gallery-column {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .gallery-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .gallery-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: var(--secondary-color);
+        }
+        
+        .artwork {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(195, 39, 43, 0.1);
+        }
+        
+        .artwork:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .artwork-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .artwork-info {
+            padding: 20px;
+        }
+        
+        .artwork-title {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .artwork-desc {
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .artwork-author {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--primary-color);
+            text-align: right;
+        }
+        
+        /* 全屏模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-img {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+            border: 3px solid var(--secondary-color);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: var(--primary-color);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+        }
+        
+        /* 针线动画元素 */
+        .needle {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,5 L60,20 L50,35 L40,20 Z" fill="%23d4af37"/><circle cx="50" cy="40" r="5" fill="%23c3272b"/></svg>');
+            background-size: contain;
+            z-index: 1;
+            pointer-events: none;
+            animation: float 15s infinite linear;
+        }
+        
+        .thread {
+            position: absolute;
+            height: 2px;
+            background: var(--secondary-color);
+            transform-origin: 0 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(200px, 150px) rotate(90deg);
+            }
+            50% {
+                transform: translate(400px, 50px) rotate(180deg);
+            }
+            75% {
+                transform: translate(100px, 300px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(195, 39, 43, 0.2);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .gallery-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .border-decoration {
+                display: none;
+            }
+            
+            .corner-decoration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 边框装饰 -->
+    <div class="border-decoration border-top"></div>
+    <div class="border-decoration border-bottom"></div>
+    <div class="border-decoration border-left"></div>
+    <div class="border-decoration border-right"></div>
+    
+    <!-- 角装饰 -->
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration top-right"></div>
+    <div class="corner-decoration bottom-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+    
+    <!-- 针线动画元素 -->
+    <div class="needle"></div>
+    <div class="needle" style="animation-delay: -5s;"></div>
+    <div class="needle" style="animation-delay: -10s;"></div>
+    
+    <div class="container">
+        <header>
+            <h1>锦绣天成</h1>
+            <p class="subtitle">学生美术作品与AI刺绣艺术展 · 传统与创新的完美融合</p>
+        </header>
+        
+        <section class="intro">
+            <h2>针尖上的艺术革命</h2>
+            <p>广绣，作为中国四大名绣之一，拥有千年历史。本展览展示了学生们创作的美术作品，以及基于这些作品通过人工智能技术生成的刺绣图案。AI通过学习数千幅传统广绣作品，掌握了针法、配色和构图精髓，将学生的创意转化为精美的数字刺绣作品。</p>
+            <p>这一创新尝试不仅保留了广绣的传统韵味，还注入了现代艺术的活力，展现了传统文化在数字时代的新生。每一幅作品都体现了手绘艺术的原创性与AI技术的精密性的完美结合。</p>
+        </section>
+        
+        <div class="gallery-section">
+            <div class="gallery-column">
+                <h2 class="gallery-title">学生美术作品</h2>
+                
+                <div class="artwork">
+                    <img src="戴嘉妍原图.jpg" alt="春江花月夜" class="artwork-img">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">春江花月夜</h3>
+                        <p class="artwork-desc">这幅作品灵感来自唐代诗人张若虚的名篇，描绘了春江潮水连海平的海上明月共潮生的壮丽景象。学生运用水墨技法，结合现代色彩表现，展现了中国传统山水画的意境。</p>
+                        <p class="artwork-author">创作者：曹思琪 (14岁)</p>
+                    </div>
+                </div>
+                
+                <div class="artwork">
+                    <img src="胡婧娴原图.jpg" alt="锦鲤戏莲" class="artwork-img">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">锦鲤戏莲</h3>
+                        <p class="artwork-desc">作品以传统工笔画技法描绘了夏日荷塘中锦鲤嬉戏的场景。学生细致刻画了锦鲤的鳞片和荷花的纹理，色彩鲜艳而不失雅致，体现了对传统绘画技法的深刻理解。</p>
+                        <p class="artwork-author">创作者：王明宇 (15岁)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gallery-column">
+                <h2 class="gallery-title">AI刺绣作品</h2>
+                
+                <div class="artwork">
+                    <img src="戴嘉妍.jpg" alt="春江花月夜 (刺绣版)" class="artwork-img">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">春江花月夜 (刺绣版)</h3>
+                        <p class="artwork-desc">AI基于原画作生成的刺绣作品，运用了广绣特有的针法如"撕针"、"续针"等。AI算法保留了水墨的韵味，同时通过丝线的光泽增强了画面的层次感，月光的银线与水波的蓝线交织出梦幻效果。</p>
+                        <p class="artwork-desc">针法：12种 | 颜色：24种 | 工时：AI模拟58小时</p>
+                    </div>
+                </div>
+                
+                <div class="artwork">
+                    <img src="胡婧娴.jpg" alt="锦鲤戏莲 (刺绣版)" class="artwork-img">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">锦鲤戏莲 (刺绣版)</h3>
+                        <p class="artwork-desc">AI将原画转化为刺绣作品时，特别强化了锦鲤的立体感，通过不同角度的针脚表现鳞片的光泽。莲叶采用"渗针"技法模拟水墨晕染效果，花瓣则用"扭针"体现其柔美质感。</p>
+                        <p class="artwork-desc">针法：15种 | 颜色：32种 | 工时：AI模拟72小时</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 全屏图片展示模态框 -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">×</span>
+            <img src="" alt="" class="modal-img" id="modalImage">
+        </div>
+    </div>
+    
+    <footer>
+        <p>智小启AI教育平台 · 传统工艺数字化传承项目</p>
+        <p>© 2026 锦绣天成 - 学生美术与AI刺绣作品展</p>
+    </footer>
+    
+    <script>
+        // 创建针线动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建针线
+            for (let i = 0; i < 5; i++) {
+                createThread();
+            }
+            
+            // 图片点击全屏功能
+            const images = document.querySelectorAll('.artwork-img');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.getElementById('closeModal');
+            
+            images.forEach(img => {
+                img.addEventListener('click', function() {
+                    modalImg.src = this.src;
+                    modalImg.alt = this.alt;
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            closeBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+        
+        function createThread() {
+            const thread = document.createElement('div');
+            thread.className = 'thread';
+            
+            // 随机位置
+            const startX = Math.random() * window.innerWidth;</script></body></html>
